@@ -5,6 +5,10 @@ import css from "./NoteForm.module.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "../../services/noteService";
 
+interface NoteFormProps {
+  onClose: () => void;
+}
+
 interface NotesFormValues {
   title: string;
   content: string;
@@ -26,7 +30,7 @@ const NotesSchema = Yup.object().shape({
   tag: Yup.string().required().oneOf(noteTags, "Choose a valid tag value"),
 });
 
-export default function NoteForm() {
+export default function NoteForm({ onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -84,7 +88,7 @@ export default function NoteForm() {
         </div>
 
         <div className={css.actions}>
-          <button type="button" className={css.cancelButton}>
+          <button type="button" className={css.cancelButton} onClick={onClose}>
             Cancel
           </button>
           <button type="submit" className={css.submitButton} disabled={false}>
