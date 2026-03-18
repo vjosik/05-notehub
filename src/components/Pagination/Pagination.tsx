@@ -9,6 +9,10 @@ interface PaginationProps {
   setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
+interface PageChangeEvent {
+  selected: number;
+}
+
 export default function Pagination({
   page,
   totalPages,
@@ -19,7 +23,7 @@ export default function Pagination({
       pageCount={totalPages}
       pageRangeDisplayed={5}
       marginPagesDisplayed={1}
-      onPageChange={({ selected }) => setPage(selected + 1)}
+      onPageChange={({ selected }: PageChangeEvent) => setPage(selected + 1)}
       forcePage={page - 1}
       containerClassName={css.pagination}
       activeClassName={css.active}
