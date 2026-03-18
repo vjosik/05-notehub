@@ -13,13 +13,13 @@ const apiClient = axios.create({
 
 interface FetchNotesParams {
   search?: string;
-  tag?: string;
+  tag?: "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
   page?: number;
   perPage?: number;
-  sortBy?: string;
+  sortBy?: "created" | "updated";
 }
 
-interface FetchNotesResponce {
+interface FetchNotesResponse {
   notes: Note[];
   totalPages: number;
 }
@@ -31,7 +31,7 @@ interface CreateNoteBody {
 }
 
 export async function fetchNotes(params: FetchNotesParams) {
-  const { data } = await apiClient.get<FetchNotesResponce>(ENDPOINT, {
+  const { data } = await apiClient.get<FetchNotesResponse>(ENDPOINT, {
     params,
   });
   return data;

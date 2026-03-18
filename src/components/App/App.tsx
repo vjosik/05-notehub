@@ -9,6 +9,7 @@ import SearchBox from "../SearchBox/SearchBox";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import css from "./App.module.css";
+import NoteForm from "../NoteForm/NoteForm";
 
 function App() {
   const [page, setPage] = useState(1);
@@ -18,7 +19,10 @@ function App() {
   const handlerOpenModal = () => setIsOpen(true);
   const handlerCloseModal = () => setIsOpen(false);
 
-  const searchNote = useDebouncedCallback(setSearch, 500);
+  const searchNote = useDebouncedCallback((value: string) => {
+    setSearch(value);
+    setPage(1);
+  }, 500);
   const { data, isLoading, isError } = useQuery({
     queryKey: ["fetchNotes", page, search],
     queryFn: () => fetchNotes({ page, perPage: 12, search }),
@@ -26,21 +30,24 @@ function App() {
   });
 
   const notes = data?.notes || [];
+  const totalPages = data?.totalPages || 1;
 
   return (
     <>
       <div className={css.app}>
         <header className={css.toolbar}>
           <SearchBox onSearch={searchNote} value={search} />
-          <Pagination
-            page={page}
-            totalPages={data?.totalPages || 1}
-            setPage={setPage}
-          />
+          {totalPages > 1 && (
+            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+          )}
           <button className={css.button} onClick={handlerOpenModal}>
             Create note +
           </button>
-          {isOpen && <Modal onClose={handlerCloseModal} />}
+          {isOpen && (
+            <Modal onClose={handlerCloseModal}>
+              <NoteForm onClose={handlerCloseModal} />
+            </Modal>
+          )}
         </header>
         {isLoading && <Loader />}
         {isError && <ErrorMessage />}
